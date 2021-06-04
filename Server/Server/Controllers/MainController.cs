@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -6,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Server.DTOs;
+using System.Collections.Generic;
 
 namespace Server.Controllers
 {
@@ -43,6 +43,25 @@ namespace Server.Controllers
             }
 
             return StatusCode(201);
+        }
+
+        [Route("listdirectory"), HttpPost]
+        public IActionResult ListDirectory([FromBody] ListDirectory body)
+        {
+            body.Path ??= "";
+        
+            if (!Directory.Exists($@"f:\{body.Path}"))
+                return StatusCode(404);
+
+            IEnumerable<string> entries = Directory.EnumerateFileSystemEntries(@$"f:\{body.Path}");
+            var stringBuilder = new StringBuilder();
+
+            foreach (var entry in entries)
+            {
+                stringBuilder.AppendLine(entry);
+            }
+
+            return StatusCode(200, new {result = stringBuilder.ToString()});
         }
     }
 }
