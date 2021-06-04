@@ -34,7 +34,7 @@ namespace Server.Controllers
             FtpWebRequest ftpRequest = (FtpWebRequest)WebRequest.Create($"ftp://172.22.214.141/{body.FilePath.Split("\\")[^1]}");
             
             ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
-            ftpRequest.Credentials = new NetworkCredential(body.UserName, body.Password);
+            ftpRequest.Credentials = new NetworkCredential(_configuration["ftpUserName"], _configuration["ftpPassword"]);
             ftpRequest.ContentLength = fileContents.Length;
 
             using (var requestStream = ftpRequest.GetRequestStream())
